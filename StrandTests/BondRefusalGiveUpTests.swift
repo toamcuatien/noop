@@ -69,6 +69,41 @@ final class BondRefusalGiveUpTests: XCTestCase {
         XCTAssertFalse(hint.contains("\u{2014}"))
     }
 
+    // MARK: - pairing mode: one procedure, WHOOP's own
+
+    /// The wizard said "on your wrist and awake", and none of the hints said to take the band off first.
+    /// WHOOP's procedure starts from an off-wrist band with its green lights dark. Pinned verbatim because the
+    /// Kotlin twin must carry the same bytes. Kotlin twin: `BondRefusalGiveUpTest."the pairing-mode steps are
+    /// WHOOP's off-wrist procedure"`.
+    func testPairingModeStepsAreTheOffWristProcedure() {
+        XCTAssertEqual(
+            "take the band off your wrist and wait for the green lights underneath to go dark, then tap the top of the band quickly and repeatedly until its light flashes blue",
+            BondRefusalGiveUp.whoopPairingModeSteps)
+        XCTAssertFalse(BondRefusalGiveUp.whoopPairingModeSteps.contains("\u{2014}"))
+    }
+
+    /// Every hint that sends someone to pairing mode reads the one procedure, so they cannot drift apart.
+    func testEveryHintThatNamesPairingModeCarriesTheSharedSteps() {
+        for t in [BondRefusalGiveUp.pausedHint(), BondRefusalGiveUp.helloSuppressedHint(),
+                  BondRefusalGiveUp.refusingToPairHint()] {
+            XCTAssertTrue(t.contains("pairing mode: \(BondRefusalGiveUp.whoopPairingModeSteps)"), t)
+            XCTAssertFalse(t.contains("flash blue (pairing mode)"), t)
+            XCTAssertTrue(t.contains("straight away"), t)
+        }
+    }
+
+    /// The pairing window is the step that runs out, so it comes after the phone's Bluetooth settings, in
+    /// WHOOP's order. Both hints used to send people to pairing mode first and then into Settings.
+    func testForgettingTheOldPairingComesBeforePairingMode() {
+        for t in [BondRefusalGiveUp.pausedHint(), BondRefusalGiveUp.refusingToPairHint()] {
+            let forget = t.range(of: "Forget This Device")
+            let pairing = t.range(of: "pairing mode")
+            XCTAssertNotNil(forget, t)
+            XCTAssertNotNil(pairing, t)
+            if let forget, let pairing { XCTAssertLessThan(forget.lowerBound, pairing.lowerBound, t) }
+        }
+    }
+
     /// A per-refusal threshold moves the crossing without duplicating it. Kotlin twin:
     /// `BondRefusalGiveUpTest."a lower threshold latches sooner, and the latch still reports once"`.
     func testPerRefusalThresholdLatchesSoonerAndStillReportsOnce() {

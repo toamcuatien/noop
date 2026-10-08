@@ -57,6 +57,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.noop.ble.BondRefusalGiveUp
 import com.noop.ble.ExperimentalBrand
 import com.noop.ble.OuraLiveSource
 import com.noop.ble.StandardHrSource
@@ -923,7 +924,8 @@ private fun prepInstructions(type: DeviceType): List<String> = when (type) {
     )
     DeviceType.Whoop5MG -> listOf(
         "WHOOP 5.0 / MG bonds to one device at a time, so unpair it from the official WHOOP app first.",
-        "Put the band into pairing mode, on your wrist and awake.",
+        // Off the wrist, not on it: the steps come from the one shared source, which says why.
+        "Put the band into pairing mode: ${BondRefusalGiveUp.WHOOP_PAIRING_MODE_STEPS}.",
         "NOOP will look for it nearby.",
     )
     DeviceType.HrStrap -> listOf(

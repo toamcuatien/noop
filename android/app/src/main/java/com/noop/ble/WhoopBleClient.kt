@@ -1162,13 +1162,15 @@ class WhoopBleClient(
 
         /** Concrete pairing-mode guidance for a WHOOP 5/MG that keeps refusing the encrypted bond because
          *  it's still bonded to the official WHOOP app (#78). Plain, country-neutral wording; Android
-         *  settings path. Parity with the macOS pairingHint text. */
+         *  settings path. Parity with the macOS pairingHint text. Forget before pairing mode, and the
+         *  pairing-mode steps from the one shared source, for the reasons given at
+         *  [BondRefusalGiveUp.WHOOP_PAIRING_MODE_STEPS]. */
         private const val PAIRING_HINT_TEXT =
             "Your WHOOP won't pair because it's still bonded to the official WHOOP app. To fix it: " +
                 "1. Close the official WHOOP app (or turn off Bluetooth on that phone). " +
-                "2. Hold or tap the band until its LEDs flash blue (pairing mode). " +
-                "3. Open Settings > Bluetooth, find your WHOOP, and choose Forget This Device. " +
-                "Then come back and tap Connect."
+                "2. Open Settings > Bluetooth, find your WHOOP, and choose Forget This Device. " +
+                "3. Put the band in pairing mode: ${BondRefusalGiveUp.WHOOP_PAIRING_MODE_STEPS}. " +
+                "Then come back and tap Connect straight away."
 
         /** 5/MG raw-capture file (app filesDir; shared via Settings → "Share 5/MG capture"). */
         const val WHOOP5_CAPTURE_FILE = "whoop5-backfill-capture.jsonl"
@@ -6817,8 +6819,8 @@ class WhoopBleClient(
 
                     1. Quit the official WHOOP app (or turn off Bluetooth on that phone).
                     2. Open Settings → Bluetooth, find your WHOOP, and Forget / Unpair it.
-                    3. Tap the band repeatedly until its LEDs flash blue (pairing mode).
-                    4. Come back here and tap Connect.
+                    3. Put the band in pairing mode: ${BondRefusalGiveUp.WHOOP_PAIRING_MODE_STEPS}.
+                    4. Come back here and tap Connect straight away.
                     """.trimIndent()
                 ) }
             }
@@ -6861,8 +6863,8 @@ class WhoopBleClient(
 
                     1. Quit the official WHOOP app (or turn off Bluetooth on that phone).
                     2. Open Settings → Bluetooth, find your WHOOP, and Forget / Unpair it.
-                    3. Tap the band repeatedly until its LEDs flash blue (pairing mode).
-                    4. Come back here and tap Connect.
+                    3. Put the band in pairing mode: ${BondRefusalGiveUp.WHOOP_PAIRING_MODE_STEPS}.
+                    4. Come back here and tap Connect straight away.
                     """.trimIndent()) }
             }
         }
@@ -10443,8 +10445,8 @@ class WhoopBleClient(
                     // user-facing hint, which lost the same ending.
                     log("WHOOP 5/MG: CLIENT_HELLO suppressed for this strap — it was never acknowledged and" +
                         " the write is what drops the link. Staying on live HR (not fully paired). Some straps" +
-                        " have paired again after being put in pairing mode (tap until the LEDs flash blue)" +
-                        " (#1635).")
+                        " have paired again after being put in pairing mode (off the wrist, then tapped until" +
+                        " its light flashes blue) (#1635).")
                     // #221: republish the pairing hint, which the Devices card's "Connected · not paired"
                     // pill reads. It is otherwise written only where a refusal FRESHLY crosses the give-up,
                     // and the latch that records the give-up outlives the process while the hint did not —
@@ -11767,8 +11769,8 @@ class WhoopBleClient(
 
                     1. Quit the official WHOOP app (or turn off Bluetooth on that phone).
                     2. Open Settings → Bluetooth, find your WHOOP, and Forget / Unpair it.
-                    3. Tap the band repeatedly until its LEDs flash blue (pairing mode).
-                    4. Come back here and tap Connect.
+                    3. Put the band in pairing mode: ${BondRefusalGiveUp.WHOOP_PAIRING_MODE_STEPS}.
+                    4. Come back here and tap Connect straight away.
                     """.trimIndent()
                 ) }
             }
@@ -12005,8 +12007,8 @@ class WhoopBleClient(
 
                         1. Quit the official WHOOP app (or turn off Bluetooth on that phone).
                         2. Open Settings → Bluetooth, find your WHOOP, and Forget / Unpair it.
-                        3. Tap the band repeatedly until its LEDs flash blue (pairing mode).
-                        4. Come back here and tap Connect.
+                        3. Put the band in pairing mode: ${BondRefusalGiveUp.WHOOP_PAIRING_MODE_STEPS}.
+                        4. Come back here and tap Connect straight away.
                         """.trimIndent()
                     ) }
                 }

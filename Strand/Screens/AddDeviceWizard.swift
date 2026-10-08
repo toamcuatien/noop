@@ -478,7 +478,9 @@ struct AddDeviceWizard: View {
         case .whoop5mg:
             return [
                 String(localized: "WHOOP 5.0 / MG bonds to one device at a time. Unpair it from the official WHOOP app first."),
-                String(localized: "Put the band into pairing mode, on your wrist and awake."),
+                // Off the wrist, not on it. A localization key has to be a literal, so this spells out
+                // "pairing mode: " + `BondRefusalGiveUp.whoopPairingModeSteps`, which says why.
+                String(localized: "Put the band into pairing mode: take the band off your wrist and wait for the green lights underneath to go dark, then tap the top of the band quickly and repeatedly until its light flashes blue."),
                 String(localized: "NOOP will look for it nearby."),
             ]
         case .hrStrap:

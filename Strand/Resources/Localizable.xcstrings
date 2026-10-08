@@ -128164,60 +128164,60 @@
         }
       }
     },
-    "Put the band into pairing mode, on your wrist and awake.": {
+    "Put the band into pairing mode: take the band off your wrist and wait for the green lights underneath to go dark, then tap the top of the band quickly and repeatedly until its light flashes blue.": {
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Versetze das Band in den Kopplungsmodus, am Handgelenk und wach."
+            "value": "Versetze das Band in den Kopplungsmodus: Nimm das Band vom Handgelenk und warte, bis die grünen Lichter auf der Unterseite ausgehen. Tippe dann schnell und wiederholt oben auf das Band, bis sein Licht blau blinkt."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pon la banda en modo de emparejamiento, en tu muñeca y activa."
+            "value": "Pon la banda en modo de emparejamiento: quítatela de la muñeca y espera a que se apaguen las luces verdes de la parte inferior. Después, toca la parte superior de la banda rápida y repetidamente hasta que su luz parpadee en azul."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mettez la bande en mode d'appairage, à votre poignet et activée."
+            "value": "Mettez la bande en mode d'appairage : retirez-la de votre poignet et attendez que les voyants verts en dessous s'éteignent, puis tapotez rapidement et à plusieurs reprises le dessus de la bande jusqu'à ce que son voyant clignote en bleu."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Metti la band in modalità abbinamento, al polso e attiva."
+            "value": "Metti la band in modalità abbinamento: toglila dal polso e attendi che le luci verdi sul retro si spengano, poi tocca la parte superiore della band rapidamente e ripetutamente finché la sua luce non lampeggia in blu."
           }
         },
         "pt-PT": {
           "stringUnit": {
             "state": "translated",
-            "value": "Coloque a bracelete no modo de emparelhamento, no pulso e acordada."
+            "value": "Coloque a bracelete no modo de emparelhamento: retire-a do pulso e aguarde até as luzes verdes na parte de baixo se apagarem. Depois, toque rápida e repetidamente na parte de cima da bracelete até a sua luz piscar a azul."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Переведите браслет в режим сопряжения, наденьте на запястье и убедитесь, что он активен."
+            "value": "Переведите браслет в режим сопряжения: снимите его с запястья и дождитесь, пока погаснут зелёные огоньки снизу, затем быстро и многократно постукивайте по верхней части браслета, пока его индикатор не замигает синим."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "让手环进入配对模式，戴在手腕上并保持唤醒。"
+            "value": "让手环进入配对模式：将手环从手腕上取下，等待底部的绿灯熄灭，然后快速连续轻敲手环顶部，直到指示灯闪烁蓝色。"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "讓手環進入配對模式，戴在你的手腕上並保持喚醒。"
+            "value": "讓手環進入配對模式：將手環從手腕上取下，等待底部的綠燈熄滅，然後快速連續輕敲手環頂部，直到指示燈閃爍藍色。"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Przełącz opaskę w tryb parowania, załóż ją na nadgarstek i obudź się."
+            "value": "Przełącz opaskę w tryb parowania: zdejmij ją z nadgarstka i poczekaj, aż zgasną zielone diody od spodu, a następnie szybko i wielokrotnie stukaj w górną część opaski, aż jej dioda zacznie migać na niebiesko."
           }
         }
       }

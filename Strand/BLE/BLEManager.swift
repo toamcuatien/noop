@@ -181,6 +181,25 @@ struct BondRefusalGiveUp {
         gaveUp = false
     }
 
+    /// How to put a WHOOP into pairing mode, as WHOOP's own sensor-troubleshooting steps give it for the
+    /// 4.0, 5.0 and MG alike: off the wrist, green lights dark, then rapid taps on top until the light flashes
+    /// blue. Family-neutral on purpose, because the re-pair guides that read it fire for both families.
+    ///
+    /// Every user-facing hint that sends someone to pairing mode reads it from HERE, so the steps cannot
+    /// drift apart again. They had: the wizard said "on your wrist and awake", the rest "tap until the LEDs
+    /// flash blue", and none said to take the band off first. That matters because the bond itself is plain
+    /// just-works and is accepted inside the strap's pairing window (Tools/linux-capture/README.md), while the
+    /// #1635 straps answered every request NOOP sent with SMP `Pairing Not Supported`. Whether any of those
+    /// requests reached a strap inside its window is exactly what the old copy left to chance: WHOOP's
+    /// procedure starts from an off-wrist band with its optical LEDs dark, and the wizard told people to do
+    /// the opposite. Whether a worn band can enter the window at all is not established here, so the copy
+    /// follows the vendor procedure rather than guessing.
+    ///
+    /// Lower-case and unpunctuated so it composes into both a numbered step and a running sentence. Pure; no
+    /// em-dash. Byte-identical to the Kotlin `BondRefusalGiveUp.WHOOP_PAIRING_MODE_STEPS`.
+    static let whoopPairingModeSteps =
+        "take the band off your wrist and wait for the green lights underneath to go dark, then tap the top of the band quickly and repeatedly until its light flashes blue"
+
     /// #750: the one-line bond-refusal EPITAPH. Records the streak + an OPAQUE install-local id only, never
     /// a MAC or serial. `opaqueId` should be a short token derived from the CoreBluetooth-local peripheral
     /// UUID (per-install, not the hardware address), which carries no PII. Pure so a fixture pins it. No
@@ -191,8 +210,19 @@ struct BondRefusalGiveUp {
 
     /// #747: the honest user-facing hint shown when auto-reconnect pauses. Tells them WHY it stopped and how
     /// to get going again. Pure; no em-dash. Byte-identical to the Android twin.
+    ///
+    /// Forget comes BEFORE pairing mode, in WHOOP's own order: the pairing window is the time-limited step,
+    /// and spending it in the phone's Bluetooth settings is how a correct procedure still misses.
     static func pausedHint() -> String {
-        "NOOP stopped retrying because your strap keeps refusing to pair. It is likely still held by the official WHOOP app, or your phone is holding an old pairing. Close the WHOOP app, put the strap in pairing mode (tap until the LEDs flash blue), and if it is listed in your Bluetooth settings choose Forget This Device. Then tap Connect to try again."
+        "NOOP stopped retrying because your strap keeps refusing to pair. It is likely still held by the official WHOOP app, or your phone is holding an old pairing. Close the WHOOP app, and if your strap is listed in your Bluetooth settings choose Forget This Device. Then put it in pairing mode: \(whoopPairingModeSteps). Tap Connect straight away."
+    }
+
+    /// #78: the hint shown once a 5/MG has refused the encrypted bond twice in a row. Lifted out of the
+    /// refusal branch so the Devices previews render the real text rather than a copy of it, which is how
+    /// the previews kept the old pairing-mode steps alive. Forget before pairing mode, for the reason
+    /// `pausedHint` gives. Pure; no em-dash.
+    static func refusingToPairHint() -> String {
+        "NOOP can see your strap but it's refusing to pair - it's likely still bonded to the official WHOOP app, or your phone is holding an old pairing. To fix it: (1) fully close the WHOOP app, (2) if your strap is listed under iPhone Settings → Bluetooth, tap it and choose Forget This Device, (3) put it in pairing mode: \(whoopPairingModeSteps), then reconnect in NOOP straight away."
     }
 
     /// #1635: the log epitaph for the SUPPRESSION path.
@@ -220,7 +250,7 @@ struct BondRefusalGiveUp {
     ///
     /// Pure. Byte-identical to the Kotlin `BondRefusalGiveUp.helloSuppressedHint`.
     static func helloSuppressedHint() -> String {
-        "The secure handshake with your strap never completes, and the attempt itself is what drops the link. NOOP has switched it off for this strap so live heart rate keeps streaming. History sync stays unavailable until it pairs, and so do motion, skin temperature, SpO₂ and respiratory rate, so sleep is staged from heart rate alone. Some straps have paired again after being put in pairing mode. Tap until the LEDs flash blue, then tap Connect."
+        "The secure handshake with your strap never completes, and the attempt itself is what drops the link. NOOP has switched it off for this strap so live heart rate keeps streaming. History sync stays unavailable until it pairs, and so do motion, skin temperature, SpO₂ and respiratory rate, so sleep is staged from heart rate alone. Some straps have paired again after being put in pairing mode: \(whoopPairingModeSteps). Then tap Connect straight away."
     }
 
     /// The paused hint for a bond that failed WITHOUT the strap ever answering (#1635).
@@ -6166,8 +6196,8 @@ extension BLEManager: @preconcurrency CBCentralManagerDelegate {
 
                 1. Quit the official WHOOP app (or turn off Bluetooth on that phone).
                 2. Open System Settings → Bluetooth and Forget your WHOOP if it's listed.
-                3. Tap the strap repeatedly until its LEDs flash blue (pairing mode).
-                4. Come back here and reconnect.
+                3. Put the band in pairing mode: \(BondRefusalGiveUp.whoopPairingModeSteps).
+                4. Come back here and reconnect straight away.
                 """
             }
         }
@@ -6386,8 +6416,8 @@ extension BLEManager: @preconcurrency CBCentralManagerDelegate {
 
             1. Quit the official WHOOP app (or turn off Bluetooth on that phone).
             2. Open System Settings → Bluetooth and Forget “WHOOP MG” if it's listed.
-            3. Tap the strap repeatedly until its LEDs flash blue (pairing mode).
-            4. Come back here and reconnect.
+            3. Put the band in pairing mode: \(BondRefusalGiveUp.whoopPairingModeSteps).
+            4. Come back here and reconnect straight away.
             """
             return
         }
@@ -6633,7 +6663,7 @@ extension BLEManager: @preconcurrency CBPeripheralDelegate {
                     // refuses the handshake, so a retry is the one thing that cannot help - and suggesting
                     // it invites the hammering this suppression exists to stop. Mirrors the user-facing
                     // hint, which lost the same ending.
-                    log("WHOOP 5/MG: CLIENT_HELLO suppressed for this strap - it was never acknowledged and the write is what drops the link. Staying on live HR (not fully paired). Some straps have paired again after being put in pairing mode (tap until the LEDs flash blue) (#1635).")
+                    log("WHOOP 5/MG: CLIENT_HELLO suppressed for this strap - it was never acknowledged and the write is what drops the link. Staying on live HR (not fully paired). Some straps have paired again after being put in pairing mode (off the wrist, then tapped until its light flashes blue) (#1635).")
                     state.pairingHint = BondRefusalGiveUp.helloSuppressedHint()
                     // The unbonded DIS attempt rides HERE and nowhere else: this is the only 5/MG state
                     // known to be stable - the handshake is off and the link is holding - and it is now
@@ -6745,7 +6775,7 @@ extension BLEManager: @preconcurrency CBPeripheralDelegate {
                     // counting silently; recordRefusal() below stays false (latched), so no epitaph spam.
                     log("WHOOP 5/MG: bond still refused during a paused-state probe (streak \(bondRefusalStreak)) - the give-up stays latched")
                 } else if bondRefusalStreak >= 2 {
-                    state.pairingHint = "NOOP can see your strap but it's refusing to pair - it's likely still bonded to the official WHOOP app, or your phone is holding an old pairing. To fix it: (1) fully close the WHOOP app, (2) on a 5.0/MG, tap the band repeatedly until the LEDs flash blue (pairing mode), (3) if your strap is listed under iPhone Settings → Bluetooth, tap it and choose Forget This Device, then reconnect in NOOP."
+                    state.pairingHint = BondRefusalGiveUp.refusingToPairHint()
                     log("WHOOP 5/MG: bond refused \(bondRefusalStreak)× with no successful bond — the strap is refusing the encrypted link (WHOOP app holds it, or a stale iOS pairing). Surfacing pairing-mode + forget-device guidance (#78).")
                 } else {
                     log("WHOOP 5/MG: bond write refused (insufficient) — retrying once; will surface pairing-mode guidance if it persists (#78).")

@@ -277,10 +277,11 @@ NOOP is an independent, **experimental** project — capable, but a work in prog
 >
 > **To pair properly:**
 > 1. **Close the official WHOOP app** on your phone (fully quit it, or turn that phone's Bluetooth off) so
->    it isn't holding the bond.
-> 2. **Put the strap in pairing mode** — on a 5.0/MG, **tap the band repeatedly** (firm taps on the
->    sensor) until the **LEDs flash blue**.
-> 3. In NOOP: **Live → choose "WHOOP 5.0 / MG" → Scan & Connect.** Success looks like
+>    it isn't holding the bond. If the strap is listed in your phone's Bluetooth settings, **Forget** it.
+> 2. **Put the strap in pairing mode** — **take it off your wrist** and wait for the green lights
+>    underneath to go dark, then **tap the top of the band quickly and repeatedly** until its light
+>    **flashes blue**. WHOOP's own steps start from an off-wrist band, so don't do this while wearing it.
+> 3. **Straight away**, in NOOP: **Live → choose "WHOOP 5.0 / MG" → Scan & Connect.** Success looks like
 >    *"CLIENT_HELLO acked — link established"* in the strap log (not *"bond refused"*). It can take a
 >    couple of attempts.
 >

@@ -65,6 +65,30 @@ class BondRefusalGiveUp(
 
     companion object {
         /**
+         * How to put a WHOOP into pairing mode, as WHOOP's own sensor-troubleshooting steps give it for the
+         * 4.0, 5.0 and MG alike: off the wrist, green lights dark, then rapid taps on top until the light
+         * flashes blue. Family-neutral on purpose, because the re-pair guides that read it fire for both
+         * families.
+         *
+         * Every user-facing hint that sends someone to pairing mode reads it from HERE, so the steps cannot
+         * drift apart again. They had: one screen said "on your wrist and awake", another "hold or tap", the
+         * rest "tap until the LEDs flash blue", and none said to take the band off first. That matters
+         * because the bond itself is plain just-works and is accepted inside the strap's pairing window
+         * (Tools/linux-capture/README.md), while the #1635 straps answered every request NOOP sent with SMP
+         * `Pairing Not Supported`. Whether any of those requests reached a strap inside its window is
+         * exactly what the old copy left to chance: WHOOP's procedure starts from an off-wrist band with its
+         * optical LEDs dark, and the wizard told people to do the opposite. Whether a worn band can enter
+         * the window at all is not established here, so the copy follows the vendor procedure rather than
+         * guessing.
+         *
+         * Lower-case and unpunctuated so it composes into both a numbered step and a running sentence.
+         * Pure; no em-dash. Byte-identical to the Swift `BondRefusalGiveUp.whoopPairingModeSteps`.
+         */
+        const val WHOOP_PAIRING_MODE_STEPS =
+            "take the band off your wrist and wait for the green lights underneath to go dark, then tap " +
+                "the top of the band quickly and repeatedly until its light flashes blue"
+
+        /**
          * #750: the one-line bond-refusal EPITAPH. Records the streak + an OPAQUE install-local id only,
          * never a MAC or serial. [opaqueId] should be a short token derived from the per-install local
          * device id, which carries no PII. Pure so a fixture pins it. No em-dash (project rule).
@@ -79,12 +103,15 @@ class BondRefusalGiveUp(
         /**
          * #747: the honest user-facing hint shown when auto-reconnect pauses. Tells them WHY it stopped and
          * how to get going again. Pure; no em-dash. Byte-identical to the Swift `BondRefusalGiveUp.pausedHint`.
+         *
+         * Forget comes BEFORE pairing mode, in WHOOP's own order: the pairing window is the time-limited
+         * step, and spending it in the phone's Bluetooth settings is how a correct procedure still misses.
          */
         fun pausedHint(): String =
             "NOOP stopped retrying because your strap keeps refusing to pair. It is likely still held by the " +
-                "official WHOOP app, or your phone is holding an old pairing. Close the WHOOP app, put the " +
-                "strap in pairing mode (tap until the LEDs flash blue), and if it is listed in your Bluetooth " +
-                "settings choose Forget This Device. Then tap Connect to try again."
+                "official WHOOP app, or your phone is holding an old pairing. Close the WHOOP app, and if " +
+                "your strap is listed in your Bluetooth settings choose Forget This Device. Then put it in " +
+                "pairing mode: $WHOOP_PAIRING_MODE_STEPS. Tap Connect straight away."
 
         /**
          * #1635: the hint for a strap whose CLIENT_HELLO is never acknowledged, where NOOP now stays
@@ -107,7 +134,7 @@ class BondRefusalGiveUp(
             "he link. NOOP has switched it off for this strap so live heart rate keeps streaming. History" +
             " sync stays unavailable until it pairs, and so do motion, skin temperature, SpO₂ and respira" +
             "tory rate, so sleep is staged from heart rate alone. Some straps have paired again after bei" +
-            "ng put in pairing mode. Tap until the LEDs flash blue, then tap Connect."
+            "ng put in pairing mode: $WHOOP_PAIRING_MODE_STEPS. Then tap Connect straight away."
 
         /**
          * #1635: the log epitaph for the suppression path.
@@ -181,8 +208,8 @@ class BondRefusalGiveUp(
 
             1. Quit the official WHOOP app (or turn off Bluetooth on that phone).
             2. Open Settings → Bluetooth, find your WHOOP, and Forget / Unpair it.
-            3. Tap the band repeatedly until its LEDs flash blue (pairing mode).
-            4. Come back here and tap Connect.
+            3. Put the band in pairing mode: $WHOOP_PAIRING_MODE_STEPS.
+            4. Come back here and tap Connect straight away.
             """.trimIndent()
 
         /**

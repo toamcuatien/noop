@@ -144,8 +144,53 @@ class BondRefusalGiveUpTest {
     fun `the stale-pairing guide still says exactly what it said`() {
         val g = BondRefusalGiveUp.stalePairingGuide()
         assertTrue(g, g.contains("Open Settings → Bluetooth, find your WHOOP, and Forget / Unpair it."))
-        assertTrue(g, g.contains("Tap the band repeatedly until its LEDs flash blue (pairing mode)."))
+        assertTrue(g, g.contains("3. Put the band in pairing mode: ${BondRefusalGiveUp.WHOOP_PAIRING_MODE_STEPS}."))
         assertTrue(g, g.startsWith("Your strap connects but never finishes pairing with NOOP"))
+    }
+
+    // --- pairing mode: one procedure, WHOOP's own ---
+
+    /**
+     * The wizard said "on your wrist and awake", one hint said "hold or tap", and none said to take the band
+     * off first. WHOOP's procedure starts from an off-wrist band with its green lights dark. Pinned verbatim
+     * because the Swift twin must carry the same bytes.
+     */
+    @Test
+    fun `the pairing-mode steps are WHOOP's off-wrist procedure`() {
+        assertEquals(
+            "take the band off your wrist and wait for the green lights underneath to go dark, then tap " +
+                "the top of the band quickly and repeatedly until its light flashes blue",
+            BondRefusalGiveUp.WHOOP_PAIRING_MODE_STEPS,
+        )
+        assertFalse(BondRefusalGiveUp.WHOOP_PAIRING_MODE_STEPS.contains("\u2014"))
+    }
+
+    /** Every hint that sends someone to pairing mode reads the one procedure, so they cannot drift apart. */
+    @Test
+    fun `every hint that names pairing mode carries the shared steps`() {
+        val texts = listOf(
+            BondRefusalGiveUp.pausedHint(),
+            BondRefusalGiveUp.helloSuppressedHint(),
+            BondRefusalGiveUp.stalePairingGuide(),
+        )
+        for (t in texts) {
+            assertTrue(t, t.contains("pairing mode: ${BondRefusalGiveUp.WHOOP_PAIRING_MODE_STEPS}."))
+            assertFalse(t, t.contains("flash blue (pairing mode)"))
+            assertTrue(t, t.contains("Connect straight away"))
+        }
+    }
+
+    /**
+     * The pairing window is the step that runs out, so it comes after the phone's Bluetooth settings, in
+     * WHOOP's order. The paused hint used to send people to pairing mode first and then into Settings.
+     */
+    @Test
+    fun `forgetting the old pairing comes before pairing mode`() {
+        for (t in listOf(BondRefusalGiveUp.pausedHint(), BondRefusalGiveUp.stalePairingGuide())) {
+            val forget = t.indexOf("Forget")
+            val pairing = t.indexOf("pairing mode")
+            assertTrue(t, forget in 0 until pairing)
+        }
     }
 
     /**
